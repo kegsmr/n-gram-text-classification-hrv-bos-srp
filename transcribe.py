@@ -1,21 +1,25 @@
-transcriptions = dict()
+class Transcriber:
 
-with open("alphabet.txt", encoding="utf-8") as file:
-	for line in file:
-		cyrillic, latin, ipa = line.strip().split(", ")
-		transcriptions[cyrillic] = ipa
-		transcriptions[latin] = ipa
+    phonemes = dict()
+    # digraphs = list()
 
-digraphs = [key for key in transcriptions.keys() if len(key) == 2]
+    def __init__(self):
+        with open("alphabet.txt", encoding="utf-8") as file:
+            for line in file:
+                cyrillic, latin, ipa = line.strip().split(", ")
+                self.phonemes[cyrillic] = ipa
+                self.phonemes[latin] = ipa
+        graphemes = sorted(self.phonemes.keys(), key=lambda k: len(k), reverse=True)
+        self.phonemes = {grapheme:self.phonemes[grapheme] for grapheme in graphemes}
 
-text = "ja čitam knjigu. ја читам кнјигу"
+    def transcribe(self, text):
+        for key in self.phonemes.keys():
+            text = text.replace(key, self.phonemes[key])
+        return text
 
-def transliterate(text):
-	for digraph in digraphs:
-		text = text.replace(digraph, transcriptions[digraph])
-	for key in transcriptions.keys():
-		text = text.replace(key, transcriptions[key])
-	return text
+if __name__ == "__main__":
+    text = "ja čitam knjigu. ја читам књигу"
 
-transliteration = transliterate(text)
-print(transliteration)
+    transcriber = Transcriber()
+    transcription = transcriber.transcribe(text)
+    print(transcription)
