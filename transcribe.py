@@ -22,4 +22,4 @@ if __name__ == "__main__":
 
     transcriber = Transcriber()
     transcription = transcriber.transcribe(text)
-    print(f"{text} = {transcription}")
+    print(f"\"{text}\" -> \"{transcription}\"")
