@@ -1,10 +1,13 @@
 import math
+from transcribe import Transcriber
 
 TASKS = [
 	("wikipedia-corpora\\bos_wikipedia_2021_300K\\bos_wikipedia_2021_300K-words.txt", "probability-matrices\\bos"),
 	("wikipedia-corpora\\hrv_wikipedia_2021_1M\\hrv_wikipedia_2021_1M-words.txt", "probability-matrices\\hrv"),
 	("wikipedia-corpora\\srp_wikipedia_2021_1M\\srp_wikipedia_2021_1M-words.txt", "probability-matrices\\srp"),
 ]
+
+transcriber = Transcriber()
 
 for input_path, output_path in TASKS:
 
@@ -21,6 +24,7 @@ for input_path, output_path in TASKS:
 			
 				number, type, frequency = line.split("	")
 
+				type = transcriber.transcribe(type, output="latin")
 				frequency = int(frequency)
 
 				word_count += frequency

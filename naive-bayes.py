@@ -1,8 +1,13 @@
 import os
 from collections import defaultdict
 import math
+from nltk.tokenize import word_tokenize
+import nltk
+from transcribe import Transcriber
 
-SENTENCE = "ja želim da slušam srpsku muziku"
+transcriber = Transcriber()
+
+INPUT = transcriber.transcribe(open("naive-bayes-input.txt", "r", encoding="utf-8").read().replace("\n", ""))
 
 PROBABILITY_MATRICES_PATH = "probability-matrices"
 
@@ -35,7 +40,7 @@ probabilities = []
 
 for label, probability_matrix in probability_matrices:
 	labels.append(label)
-	probabilities.append(sum([probability_matrix[token] for token in SENTENCE.split(" ")]))
+	probabilities.append(sum([probability_matrix[token] for token in word_tokenize(INPUT)]))
 
 probability_max = max(probabilities)
 
@@ -45,10 +50,12 @@ for label, probability in zip(labels, probabilities):
 	p = math.exp(probability-probability_max)
 	normalized_probabilities.append(p)
 
+normalized_probabilities_sum = sum(normalized_probabilities)
+
 for n in range(len(normalized_probabilities)):
 	p = normalized_probabilities[n]
-	p = p / sum(normalized_probabilities)
+	p = p / normalized_probabilities_sum
 	normalized_probabilities[n] = p
 
 for label, normalized_probability in zip(labels, normalized_probabilities):
-	print(f"{label}: {int(normalized_probability * 100)}%")
+	print(f"{label}: {round(normalized_probability * 100)}%")
