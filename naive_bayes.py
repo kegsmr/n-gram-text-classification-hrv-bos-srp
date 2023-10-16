@@ -57,7 +57,7 @@ def classify(text):
 
 	for label, type_count, word_count, probability_matrix in probability_matrices:
 		labels.append(label)
-		probabilities.append(sum([probability_matrix[token] for token in text]) + math.log((word_count + type_count) / (total_word_count + total_type_count)))
+		probabilities.append(sum([probability_matrix[token] for token in text])) # + math.log((word_count + type_count) / (total_word_count + total_type_count)))
 
 	probability_max = max(probabilities)
 

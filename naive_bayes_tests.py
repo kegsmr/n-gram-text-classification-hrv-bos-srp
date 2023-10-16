@@ -31,9 +31,16 @@ print('\nACCURACY')
 for type, accuracy in results:
 	print(f"{type.upper()}: {int(accuracy * 100)}%")
 
-"""
-ACCURACY
+""" (with class probability)
+ACCURACY 
 BOS: 37%
 HRV: 84%
 SRP: 88%
+"""
+
+""" (without class probability)
+ACCURACY
+BOS: 60%
+HRV: 73%
+SRP: 82%
 """
