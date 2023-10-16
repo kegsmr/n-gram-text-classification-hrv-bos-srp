@@ -6,8 +6,6 @@ import math
 from nltk.tokenize import word_tokenize
 from transcribe import Transcriber
 
-transcriber = Transcriber()
-
 CORPORA = [
 	("bos", "wikipedia-corpora\\bos_wikipedia_2021_300K\\bos_wikipedia_2021_300K-sentences.txt"),
 	("hrv", "wikipedia-corpora\\hrv_wikipedia_2021_1M\\hrv_wikipedia_2021_1M-sentences.txt"),
@@ -29,7 +27,7 @@ for label, corpus_path in CORPORA:
 			for character in EXCLUDED_CHARACTERS:
 				sentence = sentence.replace(character, "").lower()
 
-			sentence = transcriber.transcribe(sentence, output="latin")
+			sentence = Transcriber().transcribe(sentence, output="latin")
 
 			sentences.append(" ".join(word_tokenize(sentence)) + "\n")
 
