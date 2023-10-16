@@ -90,6 +90,6 @@ class NaiveBayesClassifier:
 
 if __name__ == "__main__":
 
-	result = NaiveBayesClassifier().classify(open("naive-bayes-input.txt", "r", encoding="utf-8").read())
+	result = NaiveBayesClassifier().classify(open("naive_bayes_input.txt", "r", encoding="utf-8").read())
 
 	print(f"Classified as: {result.upper()}")
