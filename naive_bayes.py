@@ -5,80 +5,91 @@ from nltk.tokenize import word_tokenize
 from transcribe import Transcriber
 import numpy
 
-def classify(text):
 
-	PROBABILITY_MATRICES_PATH = "probability-matrices"
+class NaiveBayesClassifier:
 
-	probability_matrices = []
 
-	for filename in os.listdir(PROBABILITY_MATRICES_PATH):
+	def __init__(self):
 
-		with open(os.path.join(PROBABILITY_MATRICES_PATH, filename), "r", encoding="utf-8") as file:
+		PROBABILITY_MATRICES_PATH = "probability-matrices"
 
-			first_line = True
+		self.probability_matrices = []
 
-			probability_matrix = None
+		for filename in os.listdir(PROBABILITY_MATRICES_PATH):
 
-			for line in file:
+			with open(os.path.join(PROBABILITY_MATRICES_PATH, filename), "r", encoding="utf-8") as file:
 
-				if first_line:
+				first_line = True
 
-					type_count, word_count = line.split("	")
+				probability_matrix = None
 
-					type_count = int(type_count)
-					word_count = int(word_count)
+				for line in file:
 
-					first_line = False
+					if first_line:
 
-				else:
+						type_count, word_count = line.split("	")
 
-					type, probability = line.split("	")
+						type_count = int(type_count)
+						word_count = int(word_count)
 
-					probability = float(probability)
-
-					if probability_matrix is None:
-
-						probability_matrix = defaultdict(lambda: probability)
+						first_line = False
 
 					else:
 
-						probability_matrix[type] = probability
+						type, probability = line.split("	")
 
-		probability_matrices.append((filename, type_count, word_count, probability_matrix))
+						probability = float(probability)
 
-	total_type_count = sum([item[1] for item in probability_matrices])
-	total_word_count = sum([item[2] for item in probability_matrices])
+						if probability_matrix is None:
 
-	labels = []
-	probabilities = []
+							probability_matrix = defaultdict(lambda: probability)
 
-	text = word_tokenize(Transcriber().transcribe(text.lower(), output="latin"))
-	print(" ".join(text))
+						else:
 
-	for label, type_count, word_count, probability_matrix in probability_matrices:
-		labels.append(label)
-		probabilities.append(sum([probability_matrix[token] for token in text])) # + math.log((word_count + type_count) / (total_word_count + total_type_count)))
+							probability_matrix[type] = probability
 
-	probability_max = max(probabilities)
+			self.probability_matrices.append((filename, type_count, word_count, probability_matrix))
 
-	normalized_probabilities = []
+		total_type_count = sum([item[1] for item in self.probability_matrices])
+		total_word_count = sum([item[2] for item in self.probability_matrices])
 
-	for label, probability in zip(labels, probabilities):
-		p = math.exp(probability-probability_max)
-		normalized_probabilities.append(p)
 
-	normalized_probabilities_sum = sum(normalized_probabilities)
+	def classify(self, text):
 
-	for n in range(len(normalized_probabilities)):
-		p = normalized_probabilities[n]
-		p = p / normalized_probabilities_sum
-		normalized_probabilities[n] = p
+		labels = []
+		probabilities = []
 
-	for label, normalized_probability in zip(labels, normalized_probabilities):
-		print(f"{label.upper()}: {round(normalized_probability * 100)}%")
+		text = word_tokenize(Transcriber().transcribe(text.lower(), output="latin"))
+		print(" ".join(text))
 
-	return labels[numpy.argmax(normalized_probabilities)]
+		for label, type_count, word_count, probability_matrix in self.probability_matrices:
+			labels.append(label)
+			probabilities.append(sum([probability_matrix[token] for token in text])) # + math.log((word_count + type_count) / (total_word_count + total_type_count)))
+
+		probability_max = max(probabilities)
+
+		normalized_probabilities = []
+
+		for label, probability in zip(labels, probabilities):
+			p = math.exp(probability-probability_max)
+			normalized_probabilities.append(p)
+
+		normalized_probabilities_sum = sum(normalized_probabilities)
+
+		for n in range(len(normalized_probabilities)):
+			p = normalized_probabilities[n]
+			p = p / normalized_probabilities_sum
+			normalized_probabilities[n] = p
+
+		for label, normalized_probability in zip(labels, normalized_probabilities):
+			print(f"{label.upper()}: {round(normalized_probability * 100)}%")
+		print()
+
+		return labels[numpy.argmax(normalized_probabilities)]
+
 
 if __name__ == "__main__":
-	result = classify(open("naive-bayes-input.txt", "r", encoding="utf-8").read())
+
+	result = NaiveBayesClassifier().classify(open("naive-bayes-input.txt", "r", encoding="utf-8").read())
+
 	print(f"Classified as: {result.upper()}")

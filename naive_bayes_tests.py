@@ -1,9 +1,11 @@
-import naive_bayes
+from naive_bayes import NaiveBayesClassifier
 import os
+
+classifier = NaiveBayesClassifier()
 
 DATASETS_PATH = os.path.join("datasets", "dev")
 
-LIMIT = 100
+LIMIT = None
 
 results = []
 
@@ -19,28 +21,35 @@ for filename in os.listdir(DATASETS_PATH):
 			if LIMIT is not None and total >= LIMIT:
 				break
 
-			if naive_bayes.classify(line) == filename:
+			if classifier.classify(line) == filename:
 				correct += 1.0
 
 			total += 1.0
 	
 	results.append((filename, correct / total))
 
-print('\nACCURACY')
+print('ACCURACY')
 
 for type, accuracy in results:
 	print(f"{type.upper()}: {int(accuracy * 100)}%")
 
-""" (with class probability)
-ACCURACY 
+""" 
+ACCURACY (100 per type, with class probability)
 BOS: 37%
 HRV: 84%
 SRP: 88%
 """
 
-""" (without class probability)
-ACCURACY
+""" 
+ACCURACY (100 per type, without class probability)
 BOS: 60%
 HRV: 73%
 SRP: 82%
+"""
+
+"""
+ACCURACY (All)
+BOS: 61%
+HRV: 75%
+SRP: 81%
 """
