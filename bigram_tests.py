@@ -1,7 +1,7 @@
-from naive_bayes import NaiveBayesClassifier
+from bigram import BigramClassifier
 import os
 
-classifier = NaiveBayesClassifier()
+classifier = BigramClassifier()
 
 DATASETS_PATH = os.path.join("datasets", "dev")
 
@@ -33,23 +33,9 @@ print('ACCURACY')
 for type, accuracy in results:
 	print(f"{type.upper()}: {int(accuracy * 100)}%")
 
-""" 
-ACCURACY (100 per type, with class probability)
-BOS: 37%
-HRV: 84%
-SRP: 88%
-"""
-
-""" 
-ACCURACY (100 per type, without class probability)
-BOS: 60%
-HRV: 73%
-SRP: 82%
-"""
-
 """
 ACCURACY
-BOS: 61%
-HRV: 75%
-SRP: 81%
+BOS: 25%
+HRV: 15%
+SRP: 14%
 """

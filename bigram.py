@@ -11,13 +11,17 @@ DATASETS = [
 	("datasets\\train\\srp", "srp"),
 ]
 
+SENTENCE_START = "[S]"
+SENTENCE_END = "[E]"
+UNKNOWN_WORD = "<UNK>"
+
 
 class BigramClassifier:
 
 	
 	def __init__(self) -> None:
 
-		dataset = {}
+		d = {}
 
 		for path, label in DATASETS:
 
@@ -28,36 +32,62 @@ class BigramClassifier:
 					try:
 
 						tokens = line.strip().split(" ")
-						tokens = ["[S]"] + tokens + ["[E]"]
+						tokens = [SENTENCE_START] + tokens + [SENTENCE_END]
 						
 						for index in range(len(tokens) - 1):
 							
-							token_a = tokens[index]
-							token_b = tokens[index + 1]
+							a_token = tokens[index]
+							b_token = tokens[index + 1]
 
-							dataset.setdefault(label, {})
-							dataset[label].setdefault(token_a, {})
-							dataset[label][token_a].setdefault(token_b, 0)
-							dataset[label][token_a][token_b] += 1
+							d.setdefault(label, {})
+							d[label].setdefault(a_token, {})
+							d[label][a_token].setdefault(b_token, 0)
+							d[label][a_token][b_token] += 1
 
 					except Exception as e:
 
 						print(f"{e}")
 
-		self.dataset
+		self.dataset = d
+		d = {}
 
-		for label in dataset:
+		for label, a_tokens in self.dataset.items():
 
-			for token_a in dataset[label]:
+			d.setdefault(label, {})
+			d[label].setdefault(UNKNOWN_WORD, {})
 
-				total_frequency = sum(token_a.values())
+			for a_token, b_tokens in a_tokens.items():
 
-				for token_b in token_a:
+				if sum(b_tokens.values()) == 1:
+					a_token = UNKNOWN_WORD
 
-					dataset.setdefault(label, defaultdict(lambda: defaultdict))
-					dataset[label].setdefault(token_a, {})
-					dataset[label][token_a].setdefault(token_b, 0)
-					dataset[label][token_a][token_b] += 1
+				d[label].setdefault(a_token, {})
+				d[label][a_token].setdefault(UNKNOWN_WORD, 0)
+
+				for b_token, frequency in b_tokens.items():
+
+					if frequency == 1:
+						b_token = UNKNOWN_WORD
+
+					d[label][a_token].setdefault(b_token, 0)
+					d[label][a_token][b_token] += frequency
+
+		self.dataset = d
+		d = {}
+
+		for label, a_tokens in self.dataset.items():
+			d.setdefault(label, {})
+			for a_token, b_tokens in a_tokens.items():
+				d[label].setdefault(a_token, {})
+				for b_token, frequency in b_tokens.items():
+					d[label][a_token][b_token] = math.log((1.0 + frequency) / (1.0 + len(d[label][a_token].values()) + sum(d[label][a_token].values())))
+
+		self.dataset = d
+
+		#for label, a_tokens in self.dataset.items():
+		#	for a_token, b_tokens in a_tokens.items():
+		#		for b_token, frequency in b_tokens.items():
+		#			print(f"{label}	{a_token}	{b_token}	{frequency}")
 
 
 	def classify(self, text):
@@ -66,13 +96,19 @@ class BigramClassifier:
 		probabilities = []
 
 		text = word_tokenize(Transcriber().transcribe(text.lower(), output="latin"))
+		text = [SENTENCE_START] + text + [SENTENCE_END]
+
 		print(" ".join(text))
 
-		text = ["[S]"] + text + ["[E]"]
+		for label in self.dataset.keys():	
 
-		for label in self.dataset:		
 			labels.append(label)
-			probabilities.append(sum([self.dataset[label][text[index]][text[index + 1]] for index in range(len(text) - 1)]))
+			
+			probability = 0.0
+			for index in range(len(text) - 1):
+				b_tokens = self.dataset[label].get(text[index], self.dataset[label][UNKNOWN_WORD])
+				probability += b_tokens.get(text[index + 1], b_tokens[UNKNOWN_WORD])
+			probabilities.append(probability)
 
 		probability_max = max(probabilities)
 
