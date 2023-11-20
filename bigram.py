@@ -25,6 +25,10 @@ class BigramClassifier:
 
 		for path, label in DATASETS:
 
+			d.setdefault(label, {})
+			d[label].setdefault(UNKNOWN_WORD, {})
+			d[label][UNKNOWN_WORD].setdefault(UNKNOWN_WORD, 0.0)
+
 			with open(path, "r", encoding="utf-8") as file:
 
 				for line in file:
@@ -38,41 +42,45 @@ class BigramClassifier:
 							
 							a_token = tokens[index]
 							b_token = tokens[index + 1]
-
-							d.setdefault(label, {})
+							
 							d[label].setdefault(a_token, {})
-							d[label][a_token].setdefault(b_token, 0)
-							d[label][a_token][b_token] += 1
+							d[label][a_token].setdefault(b_token, 0.0)
+							d[label][a_token][b_token] += 1.0
+
+							d[label][a_token].setdefault(UNKNOWN_WORD, 0.0)
 
 					except Exception as e:
 
 						print(f"{e}")
 
 		self.dataset = d
-		d = {}
+
+		"""d = {}
 
 		for label, a_tokens in self.dataset.items():
 
 			d.setdefault(label, {})
 			d[label].setdefault(UNKNOWN_WORD, {})
+			d[label][UNKNOWN_WORD].setdefault(UNKNOWN_WORD, 0.0)
 
 			for a_token, b_tokens in a_tokens.items():
 
-				if sum(b_tokens.values()) == 1:
-					a_token = UNKNOWN_WORD
+				#if sum(b_tokens.values()) == 1:
+				#	a_token = UNKNOWN_WORD
 
 				d[label].setdefault(a_token, {})
-				d[label][a_token].setdefault(UNKNOWN_WORD, 0)
+				d[label][a_token].setdefault(UNKNOWN_WORD, 0.0)
 
 				for b_token, frequency in b_tokens.items():
 
-					if frequency == 1:
-						b_token = UNKNOWN_WORD
+					#if frequency == 1:
+					#s	b_token = UNKNOWN_WORD 
 
-					d[label][a_token].setdefault(b_token, 0)
+					d[label][a_token].setdefault(b_token, 0.0)
 					d[label][a_token][b_token] += frequency
 
-		self.dataset = d
+		self.dataset = d"""
+
 		d = {}
 
 		for label, a_tokens in self.dataset.items():
@@ -84,10 +92,10 @@ class BigramClassifier:
 
 		self.dataset = d
 
-		#for label, a_tokens in self.dataset.items():
-		#	for a_token, b_tokens in a_tokens.items():
-		#		for b_token, frequency in b_tokens.items():
-		#			print(f"{label}	{a_token}	{b_token}	{frequency}")
+		"""for label, a_tokens in self.dataset.items():
+			for a_token, b_tokens in a_tokens.items():
+				for b_token, frequency in b_tokens.items():
+					print(f"{label}	{a_token}	{b_token}	{frequency}")"""
 
 
 	def dump(self):

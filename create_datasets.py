@@ -22,7 +22,7 @@ for label, corpus_path in CORPORA:
 
 			sentence = line.split(" ", 1)[1]
 
-			EXCLUDED_CHARACTERS = string.punctuation + string.digits + "“”"
+			EXCLUDED_CHARACTERS = string.punctuation + string.digits + "“”–"
 
 			for character in EXCLUDED_CHARACTERS:
 				sentence = sentence.replace(character, "").lower()
