@@ -90,6 +90,14 @@ class BigramClassifier:
 		#			print(f"{label}	{a_token}	{b_token}	{frequency}")
 
 
+	def dump(self):
+		with open("bigram_dump.txt", "w", encoding="utf-8") as file:
+			for label, a_tokens in self.dataset.items():
+				for a_token, b_tokens in a_tokens.items():
+					for b_token, probability in b_tokens.items():
+						file.write(f"{label}	{a_token}	{b_token}	{probability}\n")
+
+
 	def classify(self, text):
 
 		labels = []
@@ -109,6 +117,8 @@ class BigramClassifier:
 				b_tokens = self.dataset[label].get(text[index], self.dataset[label][UNKNOWN_WORD])
 				probability += b_tokens.get(text[index + 1], b_tokens[UNKNOWN_WORD])
 			probabilities.append(probability)
+
+		#print(probabilities)
 
 		probability_max = max(probabilities)
 
@@ -134,6 +144,13 @@ class BigramClassifier:
 		
 if __name__ == "__main__":
 
-	result = BigramClassifier().classify("ja videću ga")
+	classifier = BigramClassifier()
+
+	classifier.dump()
+
+	classifier.classify("ja videću ga")
+	classifier.classify("ja vidjeću ga")
+	classifier.classify("ja videt ću ga")
+	classifier.classify("ja vidjet ću ga")
 
 	#print(f"Classified as: {result.upper()}")

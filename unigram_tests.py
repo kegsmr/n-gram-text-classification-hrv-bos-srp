@@ -1,4 +1,4 @@
-from naive_bayes import NaiveBayesClassifier
+from unigram import NaiveBayesClassifier
 import os
 
 classifier = NaiveBayesClassifier()
