@@ -3,8 +3,6 @@ import os
 
 classifier = BigramClassifier()
 
-classifier.dump()
-
 DATASETS_PATH = os.path.join("datasets", "dev")
 
 LIMIT = None

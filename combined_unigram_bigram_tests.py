@@ -1,8 +1,7 @@
-from unigram import UnigramClassifier
+from combined_unigram_bigram import CombinedUnigramBigramClassifier
 import os
 
-classifier = UnigramClassifier()
-
+classifier = CombinedUnigramBigramClassifier()
 DATASETS_PATH = os.path.join("datasets", "dev")
 
 LIMIT = None
@@ -33,30 +32,9 @@ print('ACCURACY')
 for type, accuracy in results:
 	print(f"{type.upper()}: {int(accuracy * 100)}%")
 
-""" 
-ACCURACY (100 per type, with class probability)
-BOS: 37%
-HRV: 84%
-SRP: 88%
-"""
-
-""" 
-ACCURACY (100 per type, without class probability)
-BOS: 60%
-HRV: 73%
-SRP: 82%
-"""
-
 """
 ACCURACY
-BOS: 61%
-HRV: 75%
-SRP: 81%
-"""
-
-"""
-ACCURACY - 300K CORPUS SIZE
-BOS: 61%
-HRV: 71%
-SRP: 80%
+BOS: 24%
+HRV: 84%
+SRP: 84%
 """

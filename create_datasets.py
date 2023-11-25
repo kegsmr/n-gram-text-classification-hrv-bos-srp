@@ -31,7 +31,7 @@ for label, corpus_path in CORPORA:
 
 			sentences.append(" ".join(word_tokenize(sentence)) + "\n")
 
-	sentences_count = len(sentences)
+	SENTENCES_COUNT = 300000 #len(sentences)
 
 	TRAIN_DEV_TEST_DIRECTORIES = ("train", "dev", "test")
 	TRAIN_DEV_TEST_SPLIT = (.6, .2, .2)
@@ -43,7 +43,7 @@ for label, corpus_path in CORPORA:
 	)
 
 	for a in range(3):
-		for b in range(math.floor(TRAIN_DEV_TEST_SPLIT[a] * sentences_count)):
+		for b in range(math.floor(TRAIN_DEV_TEST_SPLIT[a] * SENTENCES_COUNT)):
 			train_dev_test_sentences[a].append(sentences.pop(random.randrange(0, len(sentences))))
 
 	for i in range(3):

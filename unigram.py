@@ -6,7 +6,7 @@ from transcribe import Transcriber
 import numpy
 
 
-class NaiveBayesClassifier:
+class UnigramClassifier:
 
 
 	def __init__(self):
@@ -54,7 +54,7 @@ class NaiveBayesClassifier:
 		total_word_count = sum([item[2] for item in self.probability_matrices])
 
 
-	def classify(self, text):
+	def classify(self, text, only_probabilities=False):
 
 		labels = []
 		probabilities = []
@@ -65,6 +65,9 @@ class NaiveBayesClassifier:
 		for label, type_count, word_count, probability_matrix in self.probability_matrices:
 			labels.append(label)
 			probabilities.append(sum([probability_matrix[token] for token in text])) # + math.log((word_count + type_count) / (total_word_count + total_type_count)))
+
+		if only_probabilities:
+			return list(zip(labels, probabilities))
 
 		probability_max = max(probabilities)
 
@@ -90,6 +93,6 @@ class NaiveBayesClassifier:
 
 if __name__ == "__main__":
 
-	result = NaiveBayesClassifier().classify(open("naive_bayes_input.txt", "r", encoding="utf-8").read())
+	result = UnigramClassifier().classify(open("naive_bayes_input.txt", "r", encoding="utf-8").read())
 
 	print(f"Classified as: {result.upper()}")
