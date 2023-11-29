@@ -7,9 +7,12 @@ from nltk.tokenize import word_tokenize
 from transcribe import Transcriber
 
 CORPORA = [
-	("bos", "wikipedia-corpora\\bos_wikipedia_2021_300K\\bos_wikipedia_2021_300K-sentences.txt"),
-	("hrv", "wikipedia-corpora\\hrv_wikipedia_2021_1M\\hrv_wikipedia_2021_1M-sentences.txt"),
-	("srp", "wikipedia-corpora\\srp_wikipedia_2021_1M\\srp_wikipedia_2021_1M-sentences.txt"),
+	("bos", "corpora\\bos_wikipedia_2021_300K\\bos_wikipedia_2021_300K-sentences.txt"),
+	("hrv", "corpora\\hrv_wikipedia_2021_1M\\hrv_wikipedia_2021_1M-sentences.txt"),
+	("srp", "corpora\\srp_wikipedia_2021_1M\\srp_wikipedia_2021_1M-sentences.txt"),
+	("eng-au", "corpora\\eng-au_web_2002_300K\\eng-au_web_2002_300K-sentences.txt"),
+	("eng-ca", "corpora\\eng-ca_web_2002_300K\\eng-ca_web_2002_300K-sentences.txt"),
+	("eng-uk", "corpora\\eng-uk_web_2002_300K\\eng-uk_web_2002_300K-sentences.txt"),
 ]
 
 for label, corpus_path in CORPORA:
