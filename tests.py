@@ -48,15 +48,15 @@ for name, classsifier, results in tests:
 
 """ 
 UNIGRAM ACCURACY
-BOS: 61%
-HRV: 71%
-SRP: 80%
+BOS: 66%
+HRV: 73%
+SRP: 81%
 BIGRAM ACCURACY
 BOS: 45%
-HRV: 48%
-SRP: 54%
+HRV: 49%
+SRP: 56%
 COMBINED ACCURACY
-BOS: 57%
-HRV: 65%
-SRP: 73%
+BOS: 60%
+HRV: 66%
+SRP: 75%
 """
