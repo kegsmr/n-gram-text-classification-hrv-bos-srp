@@ -1,5 +1,5 @@
 import math
-from transcribe import Transcriber
+from preprocessing.transcribe import Transcriber
 
 TASKS = [
 	("datasets\\train\\bos", "probability-matrices\\bos"),

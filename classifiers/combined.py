@@ -1,9 +1,9 @@
-from unigram import UnigramClassifier
-from bigram import BigramClassifier
+from classifiers.unigram import UnigramClassifier
+from classifiers.bigram import BigramClassifier
 import math
 import numpy
 
-class CombinedUnigramBigramClassifier:
+class CombinedClassifier:
 
 
 	def __init__(self):
@@ -58,7 +58,7 @@ class CombinedUnigramBigramClassifier:
 
 if __name__ == "__main__":
 
-	classifier = CombinedUnigramBigramClassifier()
+	classifier = CombinedClassifier()
 
 	classifier.classify("ja videću ga")
 	classifier.classify("ja vidjeću ga")

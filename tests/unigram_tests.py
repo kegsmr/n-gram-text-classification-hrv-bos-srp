@@ -1,4 +1,4 @@
-from unigram import UnigramClassifier
+from classifiers.unigram import UnigramClassifier
 import os
 
 classifier = UnigramClassifier()

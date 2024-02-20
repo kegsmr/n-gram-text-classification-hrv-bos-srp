@@ -2,7 +2,7 @@ import os
 from collections import defaultdict
 import math
 from nltk.tokenize import word_tokenize
-from transcribe import Transcriber
+from preprocessing.transcribe import Transcriber
 import numpy
 
 
@@ -93,6 +93,14 @@ class UnigramClassifier:
 
 if __name__ == "__main__":
 
-	result = UnigramClassifier().classify(open("naive_bayes_input.txt", "r", encoding="utf-8").read())
+	#result = UnigramClassifier().classify(open("naive_bayes_input.txt", "r", encoding="utf-8").read())
 
-	print(f"Classified as: {result.upper()}")
+	#print(f"Classified as: {result.upper()}")
+
+	classifier = UnigramClassifier()
+
+	#classifier.classify("Pritoka je rijeka Lipenka.")
+	#classifier.classify("Pritoka je reka Lipenka.")
+
+	classifier.classify("Je postao docentica kemije")
+	classifier.classify("Je postao docent hemije")

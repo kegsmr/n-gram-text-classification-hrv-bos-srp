@@ -1,8 +1,7 @@
-from bigram import BigramClassifier
+from classifiers.combined import CombinedClassifier
 import os
 
-classifier = BigramClassifier()
-
+classifier = CombinedClassifier()
 DATASETS_PATH = os.path.join("datasets", "dev")
 
 LIMIT = None
@@ -35,35 +34,7 @@ for type, accuracy in results:
 
 """
 ACCURACY
-BOS: 25%
-HRV: 15%
-SRP: 14%
-"""
-
-""" 
-ACCURACY - on training data ???????????????
-BOS: 7%
-HRV: 7%
-SRP: 7%
-"""
-
-""" 
-ACCURACY - b_tokens not classified as unknown
-BOS: 11%
-HRV: 50%
-SRP: 48%
-"""
-
-""" 
-ACCURACY - no single-occurences classified as unknown
-BOS: 8%
-HRV: 67%
-SRP: 66%
-"""
-
-""" 
-ACCURACY
-BOS: 9%
-HRV: 74%
-SRP: 71%
+BOS: 24%
+HRV: 84%
+SRP: 84%
 """

@@ -1,5 +1,5 @@
 import math
-from transcribe import Transcriber
+from preprocessing.transcribe import Transcriber
 from collections import defaultdict
 from nltk.tokenize import word_tokenize
 import numpy
@@ -54,32 +54,6 @@ class BigramClassifier:
 						print(f"{e}")
 
 		self.bigrams = b
-
-		"""b = {}
-
-		for label, a_tokens in self.bigrams.items():
-
-			b.setdefault(label, {})
-			b[label].setdefault(UNKNOWN_WORD, {})
-			b[label][UNKNOWN_WORD].setdefault(UNKNOWN_WORD, 0.0)
-
-			for a_token, b_tokens in a_tokens.items():
-
-				#if sum(b_tokens.values()) == 1:
-				#	a_token = UNKNOWN_WORD
-
-				b[label].setdefault(a_token, {})
-				b[label][a_token].setdefault(UNKNOWN_WORD, 0.0)
-
-				for b_token, frequency in b_tokens.items():
-
-					#if frequency == 1:
-					#s	b_token = UNKNOWN_WORD 
-
-					b[label][a_token].setdefault(b_token, 0.0)
-					b[label][a_token][b_token] += frequency
-
-		self.bigrams = b"""
 
 		b = {}
 
@@ -154,6 +128,8 @@ class BigramClassifier:
 if __name__ == "__main__":
 
 	classifier = BigramClassifier()
+
+	classifier.dump()
 
 	classifier.classify("ja videću ga")
 	classifier.classify("ja vidjeću ga")

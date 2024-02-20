@@ -1,7 +1,7 @@
 import os
-from unigram import UnigramClassifier
-from bigram import BigramClassifier
-from combined_unigram_bigram import CombinedUnigramBigramClassifier
+from classifiers.unigram import UnigramClassifier
+from classifiers.bigram import BigramClassifier
+from classifiers.combined import CombinedClassifier
 
 
 DATASETS_PATH = os.path.join("datasets", "test")
@@ -12,7 +12,7 @@ LIMIT = None
 tests = [
 	("unigram", UnigramClassifier(), []),
 	("bigram", BigramClassifier(), []),
-	("combined", CombinedUnigramBigramClassifier(), []),
+	("combined", CombinedClassifier(), []),
 ]
 
 

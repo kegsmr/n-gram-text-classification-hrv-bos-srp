@@ -1,8 +1,1 @@
-__pycache__
-corpora
-datasets
-eng-datasets
-probability-matrices
-resources
-wikipedia-dumps
-bigram_dump.txt
+/resources

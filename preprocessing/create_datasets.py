@@ -4,7 +4,7 @@ import random
 import os
 import math
 from nltk.tokenize import word_tokenize
-from transcribe import Transcriber
+from preprocessing.transcribe import Transcriber
 
 CORPORA = [
 	("bos", "corpora\\bos_wikipedia_2021_300K\\bos_wikipedia_2021_300K-sentences.txt"),
