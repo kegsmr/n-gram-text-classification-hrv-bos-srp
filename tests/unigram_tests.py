@@ -1,9 +1,15 @@
-from classifiers.unigram import UnigramClassifier
+
 import os
+import sys
+
+sys.path.append(os.getcwd())
+
+from classifiers.unigram import UnigramClassifier
+
 
 classifier = UnigramClassifier()
 
-DATASETS_PATH = os.path.join("datasets", "dev")
+DATASETS_PATH = os.path.join("resources", "datasets", "dev")
 
 LIMIT = None
 

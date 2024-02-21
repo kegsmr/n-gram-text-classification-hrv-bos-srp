@@ -1,42 +1,57 @@
+import sys
 import math
-from preprocessing.transcribe import Transcriber
-from collections import defaultdict
+import os
 from nltk.tokenize import word_tokenize
 import numpy
 
+sys.path.append(os.getcwd())
 
-DATASETS = [
-	("datasets\\train\\bos", "bos"),
-	("datasets\\train\\hrv", "hrv"),
-	("datasets\\train\\srp", "srp"),
-]
-
-SENTENCE_START = "[S]"
-SENTENCE_END = "[E]"
-UNKNOWN_WORD = "<UNK>"
-
+from preprocessing.transcribe import Transcriber
 
 class BigramClassifier:
 
 	
-	def __init__(self) -> None:
+	def __init__(self, input_path = os.path.join("resources", "datasets", "train"), output_path = os.path.join("resources", "probabilities", "bigram"), labels=["bos", "hrv", "srp"]):
+
+		self.INPUT_PATH = input_path
+		self.OUTPUT_PATH = output_path
+		self.LABELS = labels
+
+		self.SENTENCE_START = "[S]"
+		self.SENTENCE_END = "[E]"
+		self.UNKNOWN_WORD = "<UNK>"
+
+		os.makedirs(self.INPUT_PATH, exist_ok=True)
+		os.makedirs(self.OUTPUT_PATH, exist_ok=True)
+
+		self.calculate_probabilities()
+
+
+	def calculate_probabilities(self, input_paths=None):
+
+		print("Calculating bigram probabilities...")
+
+		if input_paths is None:
+			input_paths = [os.path.join(self.INPUT_PATH, dataset) for dataset in self.LABELS]
 
 		b = {}
 
-		for path, label in DATASETS:
+		for input_path in input_paths:
+
+			label = os.path.split(input_path)[1]
 
 			b.setdefault(label, {})
-			b[label].setdefault(UNKNOWN_WORD, {})
-			b[label][UNKNOWN_WORD].setdefault(UNKNOWN_WORD, 0.0)
+			b[label].setdefault(self.UNKNOWN_WORD, {})
+			b[label][self.UNKNOWN_WORD].setdefault(self.UNKNOWN_WORD, 0.0)
 
-			with open(path, "r", encoding="utf-8") as file:
+			with open(input_path, "r", encoding="utf-8") as file:
 
 				for line in file:
 					
 					try:
 
 						tokens = line.strip().split(" ")
-						tokens = [SENTENCE_START] + tokens + [SENTENCE_END]
+						tokens = [self.SENTENCE_START] + tokens + [self.SENTENCE_END]
 						
 						for index in range(len(tokens) - 1):
 							
@@ -47,7 +62,7 @@ class BigramClassifier:
 							b[label][a_token].setdefault(b_token, 0.0)
 							b[label][a_token][b_token] += 1.0
 
-							b[label][a_token].setdefault(UNKNOWN_WORD, 0.0)
+							b[label][a_token].setdefault(self.UNKNOWN_WORD, 0.0)
 
 					except Exception as e:
 
@@ -66,18 +81,15 @@ class BigramClassifier:
 
 		self.bigrams = b
 
-		"""for label, a_tokens in self.bigrams.items():
-			for a_token, b_tokens in a_tokens.items():
-				for b_token, frequency in b_tokens.items():
-					print(f"{label}	{a_token}	{b_token}	{frequency}")"""
+		self.dump()
 
 
 	def dump(self):
-		with open("bigram_dump.txt", "w", encoding="utf-8") as file:
-			for label, a_tokens in self.bigrams.items():
+		for label, a_tokens in self.bigrams.items():
+			with open(os.path.join(self.OUTPUT_PATH, label), "w", encoding="utf-8") as file:
 				for a_token, b_tokens in a_tokens.items():
 					for b_token, probability in b_tokens.items():
-						file.write(f"{label}	{a_token}	{b_token}	{probability}\n")
+						file.write(f"{a_token}	{b_token}	{probability}\n")
 
 
 	def classify(self, text, only_probabilities=False):
@@ -86,7 +98,7 @@ class BigramClassifier:
 		probabilities = []
 
 		text = word_tokenize(Transcriber().transcribe(text.lower(), output="latin"))
-		text = [SENTENCE_START] + text + [SENTENCE_END]
+		text = [self.SENTENCE_START] + text + [self.SENTENCE_END]
 
 		print(" ".join(text))
 
@@ -96,8 +108,8 @@ class BigramClassifier:
 			
 			probability = 0.0
 			for index in range(len(text) - 1):
-				b_tokens = self.bigrams[label].get(text[index], self.bigrams[label][UNKNOWN_WORD])
-				probability += b_tokens.get(text[index + 1], b_tokens[UNKNOWN_WORD])
+				b_tokens = self.bigrams[label].get(text[index], self.bigrams[label][self.UNKNOWN_WORD])
+				probability += b_tokens.get(text[index + 1], b_tokens[self.UNKNOWN_WORD])
 			probabilities.append(probability)
 
 		if only_probabilities:
@@ -129,11 +141,7 @@ if __name__ == "__main__":
 
 	classifier = BigramClassifier()
 
-	classifier.dump()
-
 	classifier.classify("ja videću ga")
 	classifier.classify("ja vidjeću ga")
 	classifier.classify("ja videt ću ga")
 	classifier.classify("ja vidjet ću ga")
-
-	#print(f"Classified as: {result.upper()}")

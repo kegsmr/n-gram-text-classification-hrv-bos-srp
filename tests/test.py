@@ -1,41 +1,55 @@
 import os
+import sys
+import csv
+
+sys.path.append(os.getcwd())
+
 from classifiers.unigram import UnigramClassifier
 from classifiers.bigram import BigramClassifier
 from classifiers.combined import CombinedClassifier
+from preprocessing.preprocess import create_datasets
 
-
-DATASETS_PATH = os.path.join("datasets", "test")
+DATASETS_PATH = os.path.join("resources", "datasets", "test")
 
 LIMIT = None
 
+unigram_classifier = UnigramClassifier()
+bigram_classifier = BigramClassifier()
 
 tests = [
-	("unigram", UnigramClassifier(), []),
-	("bigram", BigramClassifier(), []),
-	("combined", CombinedClassifier(), []),
+	("unigram", unigram_classifier, []),
+	("bigram", bigram_classifier, []),
+	("combined", CombinedClassifier(unigram_classifier=unigram_classifier, bigram_classifier=bigram_classifier), []),
 ]
 
+with open("results.csv", "w", newline='', encoding="utf-8") as file:
 
-for name, classifier, results in tests:
+	writer = csv.writer(file)
 
-	for filename in os.listdir(DATASETS_PATH):
+	for name, classifier, results in tests:
 
-		correct = 0.0
-		total = 0.0
+		for filename in os.listdir(DATASETS_PATH):
 
-		with open(os.path.join(DATASETS_PATH, filename), "r", encoding="utf-8") as file:
+			correct = 0.0
+			total = 0.0
 
-			for line in file:
+			with open(os.path.join(DATASETS_PATH, filename), "r", encoding="utf-8") as file:
 
-				if LIMIT is not None and total >= LIMIT:
-					break
+				for line in file:
 
-				if classifier.classify(line) == filename:
-					correct += 1.0
+					if LIMIT is not None and total >= LIMIT:
+						break
 
-				total += 1.0
-		
-		results.append((filename, correct / total))
+					label = classifier.classify(line)
+
+					writer.writerow([name, filename, label, line])
+
+					if label == filename:
+						correct += 1.0
+
+					total += 1.0
+			
+			results.append((filename, correct / total))
 
 
 for name, classsifier, results in tests:
@@ -59,4 +73,19 @@ COMBINED ACCURACY
 BOS: 60%
 HRV: 66%
 SRP: 75%
+"""
+
+"""
+UNIGRAM ACCURACY
+BOS: 62%
+HRV: 72%
+SRP: 80%
+BIGRAM ACCURACY
+BOS: 41%
+HRV: 55%
+SRP: 50%
+COMBINED ACCURACY
+BOS: 56%
+HRV: 70%
+SRP: 72%
 """

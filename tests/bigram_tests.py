@@ -1,5 +1,10 @@
-from classifiers.bigram import BigramClassifier
 import os
+import sys
+
+sys.path.append(os.getcwd())
+
+from classifiers.bigram import BigramClassifier
+
 
 classifier = BigramClassifier()
 

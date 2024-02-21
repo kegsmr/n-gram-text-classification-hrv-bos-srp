@@ -1,5 +1,9 @@
-from classifiers.combined import CombinedClassifier
 import os
+import sys
+
+sys.path.append(os.getcwd())
+
+from classifiers.combined import CombinedClassifier
 
 classifier = CombinedClassifier()
 DATASETS_PATH = os.path.join("datasets", "dev")

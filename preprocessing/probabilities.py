@@ -28,7 +28,7 @@ def calculate_unigram_probabilities(tasks=[(
 			
 			type_count = len(type_frequencies)
 
-		print(f"{type_count} types", f"{word_count} words")
+		print(f"Processing {type_count} types and {word_count} words...")
 
 		with open(output_path, "w", encoding="utf-8") as output_file:
 
@@ -57,7 +57,50 @@ def calculate_bigram_probabilities(tasks=[(
 			
 			os.makedirs(os.path.split(path)[0], exist_ok=True)
 
-	
+	b = {}
+
+	for path, label in DATASETS:
+
+		b.setdefault(label, {})
+		b[label].setdefault(UNKNOWN_WORD, {})
+		b[label][UNKNOWN_WORD].setdefault(UNKNOWN_WORD, 0.0)
+
+		with open(path, "r", encoding="utf-8") as file:
+
+			for line in file:
+				
+				try:
+
+					tokens = line.strip().split(" ")
+					tokens = [SENTENCE_START] + tokens + [SENTENCE_END]
+					
+					for index in range(len(tokens) - 1):
+						
+						a_token = tokens[index]
+						b_token = tokens[index + 1]
+						
+						b[label].setdefault(a_token, {})
+						b[label][a_token].setdefault(b_token, 0.0)
+						b[label][a_token][b_token] += 1.0
+
+						b[label][a_token].setdefault(UNKNOWN_WORD, 0.0)
+
+				except Exception as e:
+
+					print(f"{e}")
+
+	bigrams = b
+
+	b = {}
+
+	for label, a_tokens in self.bigrams.items():
+		b.setdefault(label, {})
+		for a_token, b_tokens in a_tokens.items():
+			b[label].setdefault(a_token, {})
+			for b_token, frequency in b_tokens.items():
+				b[label][a_token][b_token] = math.log((1.0 + frequency) / (1.0 + len(b[label][a_token].values()) + sum(b[label][a_token].values())))
+
+	bigrams = b
 
 
 if __name__ == "__main__":

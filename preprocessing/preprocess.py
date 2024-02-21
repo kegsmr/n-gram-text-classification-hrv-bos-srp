@@ -1,10 +1,13 @@
 import string
 import random
 import os
+import sys
 import math
 from nltk.tokenize import word_tokenize
-from transcribe import Transcriber
 
+sys.path.append(os.getcwd())
+
+from preprocessing.transcribe import Transcriber
 
 def create_datasets(output_path=os.path.join("resources", "datasets"), corpora=[
 			("bos", os.path.join("resources", "corpora", "bos_wikipedia_2021_300K", "bos_wikipedia_2021_300K-sentences.txt")),

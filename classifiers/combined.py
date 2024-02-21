@@ -1,15 +1,27 @@
-from classifiers.unigram import UnigramClassifier
-from classifiers.bigram import BigramClassifier
 import math
 import numpy
+import sys
+import os
+
+sys.path.append(os.getcwd())
+
+from classifiers.unigram import UnigramClassifier
+from classifiers.bigram import BigramClassifier
 
 class CombinedClassifier:
 
 
-	def __init__(self):
+	def __init__(self, unigram_classifier=None, bigram_classifier=None):
 
-		self.unigram_classifier = UnigramClassifier()
-		self.bigram_classifier = BigramClassifier()
+		if unigram_classifier is None:
+			self.unigram_classifier = UnigramClassifier()
+		else:
+			self.unigram_classifier = unigram_classifier
+
+		if bigram_classifier is None:
+			self.bigram_classifier = BigramClassifier()
+		else:
+			self.bigram_classifier = bigram_classifier
 
 
 	def classify(self, text, only_probabilities=False):

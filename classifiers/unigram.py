@@ -2,22 +2,80 @@ import os
 from collections import defaultdict
 import math
 from nltk.tokenize import word_tokenize
-from preprocessing.transcribe import Transcriber
 import numpy
+import sys
 
+sys.path.append(os.getcwd())
+
+from preprocessing.transcribe import Transcriber
 
 class UnigramClassifier:
 
 
-	def __init__(self):
+	def __init__(self, input_path=os.path.join("resources", "datasets", "train"), output_path=os.path.join("resources", "probabilities", "unigram"), labels=["bos", "hrv", "srp"]):
 
-		PROBABILITY_MATRICES_PATH = "probability-matrices"
+		self.INPUT_PATH = input_path
+		self.OUTPUT_PATH = output_path
+		self.LABELS = labels
 
-		self.probability_matrices = []
+		os.makedirs(self.INPUT_PATH, exist_ok=True)
+		os.makedirs(self.OUTPUT_PATH, exist_ok=True)
 
-		for filename in os.listdir(PROBABILITY_MATRICES_PATH):
+		self.calculate_probabilities()
 
-			with open(os.path.join(PROBABILITY_MATRICES_PATH, filename), "r", encoding="utf-8") as file:
+
+	def calculate_probabilities(self, input_paths=None):
+
+		print("Calculating unigram probabilities...")
+
+		if input_paths is None:
+			input_paths = [os.path.join(self.INPUT_PATH, dataset) for dataset in self.LABELS]
+
+		self.probabilities = []
+
+		for input_path in input_paths:
+
+			with open(input_path, "r", encoding="utf-8") as input_file:
+
+				type_frequencies = {}
+				word_count = 0
+
+				for line in input_file:
+					try:
+						for token in line.strip().split(" "):
+							word_count += 1
+							type_frequencies[token] = type_frequencies.get(token, 0) + 1
+					except Exception as e:
+						print(f"{e}")
+				
+				type_count = len(type_frequencies)
+
+			print(f"- processed {type_count} types and {word_count} words.")
+
+			default_probability = math.log(1 / (1 + type_count + word_count))
+
+			probability_matrix = defaultdict(lambda: default_probability)
+
+			for type in type_frequencies:
+
+				frequency = type_frequencies[type]
+
+				probability = math.log((1 + frequency) / (1 + type_count + word_count))
+
+				probability_matrix[type] = probability
+
+			self.probabilities.append((os.path.split(input_path)[1], type_count, word_count, probability_matrix))
+
+		self.dump()
+
+
+	"""def load(self, path=os.path.join("resources", "probabilities", "unigram")):
+
+		self.probabilities = []
+
+		for filename in os.listdir(path):
+
+			with open(os.path.join(path, filename), "r", encoding="utf-8") as file:
 
 				first_line = True
 
@@ -42,16 +100,35 @@ class UnigramClassifier:
 
 						if probability_matrix is None:
 
-							probability_matrix = defaultdict(lambda: probability)
+							probability_matrix = defaultdict(lambda: math.log(1 / (1 + type_count + word_count)))
 
 						else:
 
 							probability_matrix[type] = probability
 
-			self.probability_matrices.append((filename, type_count, word_count, probability_matrix))
+			self.probabilities.append((filename, type_count, word_count, probability_matrix))
 
-		total_type_count = sum([item[1] for item in self.probability_matrices])
-		total_word_count = sum([item[2] for item in self.probability_matrices])
+
+		#total_type_count = sum([item[1] for item in self.probabilities])
+		#total_word_count = sum([item[2] for item in self.probabilities])"""
+
+	
+	def dump(self):
+
+		for label, type_count, word_count, probability_matrix in self.probabilities:
+		
+			output_path = os.path.join(self.OUTPUT_PATH, label)
+
+			with open(output_path, "w", encoding="utf-8") as output_file:
+
+				output_file.write(f"{type_count}	{word_count}\n")
+
+				default_probability = math.log(1 / (1 + type_count + word_count))
+				output_file.write(f"	{default_probability}\n")
+
+				for type, probability in probability_matrix.items():
+
+					output_file.write(f"{type}	{probability}\n")
 
 
 	def classify(self, text, only_probabilities=False):
@@ -62,7 +139,7 @@ class UnigramClassifier:
 		text = word_tokenize(Transcriber().transcribe(text.lower(), output="latin"))
 		print(" ".join(text))
 
-		for label, type_count, word_count, probability_matrix in self.probability_matrices:
+		for label, type_count, word_count, probability_matrix in self.probabilities:
 			labels.append(label)
 			probabilities.append(sum([probability_matrix[token] for token in text])) # + math.log((word_count + type_count) / (total_word_count + total_type_count)))
 
@@ -93,14 +170,9 @@ class UnigramClassifier:
 
 if __name__ == "__main__":
 
-	#result = UnigramClassifier().classify(open("naive_bayes_input.txt", "r", encoding="utf-8").read())
-
-	#print(f"Classified as: {result.upper()}")
-
 	classifier = UnigramClassifier()
 
-	#classifier.classify("Pritoka je rijeka Lipenka.")
-	#classifier.classify("Pritoka je reka Lipenka.")
+	print()
 
 	classifier.classify("Je postao docentica kemije")
 	classifier.classify("Je postao docent hemije")
