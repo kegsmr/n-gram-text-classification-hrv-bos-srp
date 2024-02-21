@@ -25,34 +25,41 @@ tests = [
 ]
 
 
-for name, classifier, results in tests:
+with open("predictions.csv", "w", encoding="utf-8") as csv_file:
 
-	overall_correct = 0.0
-	overall_total = 0.0
+	csv_writer = csv.writer(csv_file)
+	csv_writer.writerow(["Classifier", "Actual", "Predicted", "Sentence"])
 
-	for filename in os.listdir(DATASETS_PATH):
+	for name, classifier, results in tests:
 
-		correct = 0.0
-		total = 0.0
+		overall_correct = 0.0
+		overall_total = 0.0
 
-		with open(os.path.join(DATASETS_PATH, filename), "r", encoding="utf-8") as file:
+		for filename in os.listdir(DATASETS_PATH):
 
-			for line in file:
+			correct = 0.0
+			total = 0.0
 
-				if LIMIT is not None and total >= LIMIT:
-					break
+			with open(os.path.join(DATASETS_PATH, filename), "r", encoding="utf-8", newline='') as file:
 
-				label = classifier.classify(line)
+				for line in file:
 
-				if label == filename:
-					correct += 1.0
+					if LIMIT is not None and total >= LIMIT:
+						break
 
-				total += 1.0
-		
-		overall_correct += correct
-		overall_total += total
+					label = classifier.classify(line)
 
-		results.append((filename, correct / total))
+					csv_writer.writerow([name, filename, label, line])
+
+					if label == filename:
+						correct += 1.0
+
+					total += 1.0
+			
+			overall_correct += correct
+			overall_total += total
+
+			results.append((filename, correct / total))
 
 
 for name, classsifier, results in tests:
