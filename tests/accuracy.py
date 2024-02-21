@@ -9,9 +9,11 @@ from classifiers.bigram import BigramClassifier
 from classifiers.combined import CombinedClassifier
 from preprocessing.preprocess import create_datasets
 
+
 DATASETS_PATH = os.path.join("resources", "datasets", "test")
 
 LIMIT = None
+
 
 unigram_classifier = UnigramClassifier()
 bigram_classifier = BigramClassifier()
@@ -22,42 +24,46 @@ tests = [
 	("combined", CombinedClassifier(unigram_classifier=unigram_classifier, bigram_classifier=bigram_classifier), []),
 ]
 
-with open("results.csv", "w", newline='', encoding="utf-8") as file:
 
-	writer = csv.writer(file)
+for name, classifier, results in tests:
 
-	for name, classifier, results in tests:
+	overall_correct = 0.0
+	overall_total = 0.0
 
-		for filename in os.listdir(DATASETS_PATH):
+	for filename in os.listdir(DATASETS_PATH):
 
-			correct = 0.0
-			total = 0.0
+		correct = 0.0
+		total = 0.0
 
-			with open(os.path.join(DATASETS_PATH, filename), "r", encoding="utf-8") as file:
+		with open(os.path.join(DATASETS_PATH, filename), "r", encoding="utf-8") as file:
 
-				for line in file:
+			for line in file:
 
-					if LIMIT is not None and total >= LIMIT:
-						break
+				if LIMIT is not None and total >= LIMIT:
+					break
 
-					label = classifier.classify(line)
+				label = classifier.classify(line)
 
-					writer.writerow([name, filename, label, line])
+				if label == filename:
+					correct += 1.0
 
-					if label == filename:
-						correct += 1.0
+				total += 1.0
+		
+		overall_correct += correct
+		overall_total += total
 
-					total += 1.0
-			
-			results.append((filename, correct / total))
+		results.append((filename, correct / total))
 
 
 for name, classsifier, results in tests:
 
-	print(name.upper() + " ACCURACY")
+	print(name.upper() + " ACCURACY:")
 
 	for type, accuracy in results:
 		print(f"{type.upper()}: {int(accuracy * 100)}%")
+
+
+print(f"OVERALL ACCURACY: {int((overall_correct / overall_total) * 100)}%")
 
 
 """ 

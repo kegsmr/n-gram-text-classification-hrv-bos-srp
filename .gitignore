@@ -6,6 +6,6 @@
 /tests/combined_tests.py
 /tests/unigram_tests.py
 
-results.csv
-
 *__pycache__
+
+*.csv
