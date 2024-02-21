@@ -1,3 +1,5 @@
+import os
+
 class Transcriber:
 
 	phonemes = {}
@@ -5,7 +7,7 @@ class Transcriber:
 	# digraphs = list()
 
 	def __init__(self):
-		with open("alphabet.txt", encoding="utf-8") as file:
+		with open(os.path.join("resources", "alphabet.txt"), encoding="utf-8") as file:
 			for line in file:
 				cyrillic, latin, ipa = line.strip().split(", ")
 				self.phonemes[cyrillic] = ipa
