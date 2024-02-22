@@ -25,41 +25,52 @@ tests = [
 ]
 
 
-with open("predictions.csv", "w", encoding="utf-8") as csv_file:
+"""performance = {}
+
+for name in [test[0] for test in tests]:
+	performance[name] = {}
+	for label in os.listdir(DATASETS_PATH):
+		performance[name][label] = {}
+		for category in ["TP", "TN", "FP", "FN"]:
+			performance[name][label][category] = 0"""
+
+
+with open("predictions.csv", "w", encoding="utf-8", newline='') as csv_file:
 
 	csv_writer = csv.writer(csv_file)
 	csv_writer.writerow(["Classifier", "Actual", "Predicted", "Sentence"])
 
 	for name, classifier, results in tests:
 
-		overall_correct = 0.0
-		overall_total = 0.0
+		#overall_correct = 0.0
+		#overall_total = 0.0
 
-		for filename in os.listdir(DATASETS_PATH):
+		for label in os.listdir(DATASETS_PATH):
 
 			correct = 0.0
 			total = 0.0
 
-			with open(os.path.join(DATASETS_PATH, filename), "r", encoding="utf-8", newline='') as file:
+			with open(os.path.join(DATASETS_PATH, label), "r", encoding="utf-8") as file:
 
 				for line in file:
 
 					if LIMIT is not None and total >= LIMIT:
 						break
 
-					label = classifier.classify(line)
+					predicted_label = classifier.classify(line)
 
-					csv_writer.writerow([name, filename, label, line])
+					csv_writer.writerow([name, label, predicted_label, line])
 
-					if label == filename:
+					if label == predicted_label:
+						#performance[name][label][""]
 						correct += 1.0
 
 					total += 1.0
 			
-			overall_correct += correct
-			overall_total += total
+			#overall_correct += correct
+			#overall_total += total
 
-			results.append((filename, correct / total))
+			results.append((label, correct / total))
 
 
 for name, classsifier, results in tests:
@@ -70,7 +81,7 @@ for name, classsifier, results in tests:
 		print(f"{type.upper()}: {int(accuracy * 100)}%")
 
 
-print(f"OVERALL ACCURACY: {int((overall_correct / overall_total) * 100)}%")
+#print(f"OVERALL ACCURACY: {int((overall_correct / overall_total) * 100)}%")
 
 
 """ 
