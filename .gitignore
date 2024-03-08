@@ -11,6 +11,8 @@ testing.py
 
 *__pycache__
 
+*.bak*
 *.csv
 *.png
+*.rar
 *.xlsx

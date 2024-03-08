@@ -28,7 +28,7 @@ def create_datasets(output_path=os.path.join("resources", "datasets"), corpora=[
 
 			for line in corpus_file:
 
-				sentence = line.split(" ", 1)[1]
+				sentence = " ".join(line.split("	")[1:])
 
 				EXCLUDED_CHARACTERS = string.punctuation + string.digits + "“”–"
 
