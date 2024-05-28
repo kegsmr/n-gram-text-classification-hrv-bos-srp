@@ -1,4 +1,4 @@
-/resources/corpora
+/resources/corpora/*/*
 /resources/datasets
 /resources/probabilities
 
