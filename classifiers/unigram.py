@@ -50,7 +50,7 @@ class UnigramClassifier:
 				
 				type_count = len(type_frequencies)
 
-			print(f"- processed {type_count} types and {word_count} words.")
+			#print(f"- processed {type_count} types and {word_count} words.")
 
 			default_probability = math.log(1 / (1 + type_count + word_count))
 

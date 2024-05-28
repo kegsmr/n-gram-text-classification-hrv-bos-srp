@@ -110,7 +110,7 @@ class BigramClassifier:
 			for index in range(len(text) - 1):
 				b_tokens = self.bigrams[label].get(text[index], self.bigrams[label][self.UNKNOWN_WORD])
 				new_probability = b_tokens.get(text[index + 1], b_tokens[self.UNKNOWN_WORD])
-				print(f"{label} {text[index]} {text[index + 1]} {new_probability}")
+				#print(f"{label} {text[index]} {text[index + 1]} {new_probability}")
 				probability += new_probability
 			probabilities.append(probability)
 

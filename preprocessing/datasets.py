@@ -61,7 +61,3 @@ def create_datasets(output_path=os.path.join("resources", "datasets"), corpora=[
 			with open(os.path.join(output_path, TRAIN_DEV_TEST_DIRECTORIES[i], label), "w", encoding="utf-8") as file:
 				for sentence in train_dev_test_sentences[i]:
 					file.write(sentence)
-
-
-if __name__ == "__main__":
-	create_datasets()

@@ -7,7 +7,6 @@ sys.path.append(os.getcwd())
 from classifiers.unigram import UnigramClassifier
 from classifiers.bigram import BigramClassifier
 from classifiers.combined import CombinedClassifier
-from preprocessing.preprocess import create_datasets
 
 
 DATASETS_PATH = os.path.join("resources", "datasets", "test")
