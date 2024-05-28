@@ -1,17 +1,7 @@
 /resources/corpora/*/*
-/resources/datasets
-/resources/probabilities
-
-/tests/bigram_tests.py
-/tests/combined_tests.py
-/tests/unigram_tests.py
-
-examples.txt
+/resources/datasets/*/*
+/resources/probabilities/*/*
 
 *__pycache__
 
-*.bak*
 *.csv
-*.png
-*.rar
-*.xlsx
