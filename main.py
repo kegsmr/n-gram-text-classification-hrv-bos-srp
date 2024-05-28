@@ -5,6 +5,8 @@ from classifiers.combined import CombinedClassifier
 
 def main():
 
+	print()
+
 	unigram_classifier = UnigramClassifier()
 	bigram_classifier = BigramClassifier()
 	combined_classifier = CombinedClassifier(unigram_classifier=unigram_classifier, bigram_classifier=bigram_classifier)

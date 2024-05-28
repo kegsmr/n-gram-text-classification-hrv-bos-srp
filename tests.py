@@ -1,8 +1,5 @@
 import os
-import sys
 import csv
-
-sys.path.append(os.getcwd())
 
 from classifiers.unigram import UnigramClassifier
 from classifiers.bigram import BigramClassifier
