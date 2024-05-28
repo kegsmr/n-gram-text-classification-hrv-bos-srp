@@ -11,11 +11,8 @@ from preprocessing.transcribe import Transcriber
 
 def create_datasets(output_path=os.path.join("resources", "datasets"), corpora=[
 			("bos", os.path.join("resources", "corpora", "bos_wikipedia_2021_300K", "bos_wikipedia_2021_300K-sentences.txt")),
-			("hrv", os.path.join("resources", "corpora", "hrv_wikipedia_2021_1M", "hrv_wikipedia_2021_1M-sentences.txt")),
-			("srp", os.path.join("resources", "corpora", "srp_wikipedia_2021_1M", "srp_wikipedia_2021_1M-sentences.txt")),
-			#("eng-au", os.path.join("resources", "corpora", "eng-au_web_2002_300K", "eng-au_web_2002_300K-sentences.txt")),
-			#("eng-ca", os.path.join("resources", "corpora", "eng-ca_web_2002_300K", "eng-ca_web_2002_300K-sentences.txt")),
-			#("eng-uk", os.path.join("resources", "corpora", "eng-uk_web_2002_300K", "eng-uk_web_2002_300K-sentences.txt")),
+			("hrv", os.path.join("resources", "corpora", "hrv_wikipedia_2021_300K", "hrv_wikipedia_2021_300K-sentences.txt")),
+			("srp", os.path.join("resources", "corpora", "srp_wikipedia_2021_300K", "srp_wikipedia_2021_300K-sentences.txt")),
 		]):
 
 	for label, corpus_path in corpora:
